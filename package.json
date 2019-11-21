@@ -1,0 +1,48 @@
+{
+  "name": "frontend-project-lvl2",
+  "version": "0.0.1",
+  "description": "traning project 'Differences calculator'",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx jest",
+    "gendiff": "npx babel-node src/bin/gendiff",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loukianen/frontend-project-lvl2.git"
+  },
+  "keywords": [
+    "hexlet",
+    "lvl2",
+    "differences",
+    "calculator"
+  ],
+  "bin": {
+    "gendiff": "dist/bin/gendiff"
+  },
+  "author": "Konstantin Lukyanenok",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loukianen/frontend-project-lvl2/issues"
+  },
+  "homepage": "https://github.com/loukianen/frontend-project-lvl2#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/node": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
+    "babel-eslint": "^10.0.3",
+    "babel-jest": "^24.9.0",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "jest": "^24.9.0"
+  },
+  "dependencies": {
+    "commander": "^4.0.1",
+    "lodash": "^4.17.15"
+  }
+}
