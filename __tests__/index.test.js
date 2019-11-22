@@ -15,6 +15,7 @@ const wrongResult = genDiff(firstFile, secondFile).split('\n').slice(1);
   expect(getFullPath('../../data/before.json')).toBe('/home/lkf/data/before.json');
   expect(getFullPath('before.json')).toBe('/home/lkf/projects/frontend-project-lvl2/before.json');
 })*/
+// that cod id from code-climat 8952ce102d144a6c27b94c0ce7d2a4696597733df4542e17c624b126c83bc3a1
 test('getDifference', () => {
   expect(result).toEqual(expect.arrayContaining(expectResult));
   expect(expectResult).toEqual(expect.arrayContaining(result));
