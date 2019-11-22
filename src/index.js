@@ -13,17 +13,17 @@ const getFullPath = (value) => {
 const getDifference = (before, after) => {
   const difference = _.reduce(before, (acc, value, key) => {
     if (!_.has(after, [key])) {
-      acc.push(`- ${key}: ${before[key]}`);
+      acc.push(`  - ${key}: ${before[key]}`);
     } else if (value === after[key]) {
-      acc.push(`  ${key}: ${value}`);
+      acc.push(`    ${key}: ${value}`);
     } else {
-      acc.push(`+ ${key}: ${after[key]}`);
-      acc.push(`- ${key}: ${value}`);
+      acc.push(`  + ${key}: ${after[key]}`);
+      acc.push(`  - ${key}: ${value}`);
     }
     return acc;
   }, []);
   return _.reduce(after, (acc, value, key) => {
-    if (!_.has(before, [key])) acc.push(`+ ${key}: ${value}`);
+    if (!_.has(before, [key])) acc.push(`  + ${key}: ${value}`);
     return acc;
   }, difference);
 };
