@@ -1,8 +1,8 @@
 import path from 'path';
-import fs from 'fs';
 import program from 'commander';
 import _ from 'lodash';
 import pkg from '../package.json';
+import parse from './parser';
 
 const getFullPath = (value) => {
   const valueParts = value.split('/');
@@ -28,10 +28,9 @@ const getDifference = (before, after) => {
   }, difference);
 };
 const genDiff = (path1, path2) => {
-  const jsonBefore = JSON.parse(fs.readFileSync(path1));
-  const jsonAfter = JSON.parse(fs.readFileSync(path2));
-  const diffArr = getDifference(jsonBefore, jsonAfter);
-  const res = `{\n${diffArr.join('\n')}\n}`;
+  const dataBefore = parse(path1);
+  const dataAfter = parse(path2);
+  const res = `{\n${getDifference(dataBefore, dataAfter).join('\n')}\n}`;
   console.log(res);
   return res;
 };
