@@ -10,27 +10,50 @@ const getFullPath = (value) => {
   const catalog = valueParts.join('/');
   return path.resolve(catalog, fileName);
 };
-const getDifference = (before, after) => {
-  const difference = _.reduce(before, (acc, value, key) => {
-    if (!_.has(after, [key])) {
-      acc.push(`  - ${key}: ${before[key]}`);
-    } else if (value === after[key]) {
-      acc.push(`    ${key}: ${value}`);
+const addIndent = (obj) => {
+  if (!_.isObject(obj)) return obj;
+  return _.reduce(obj, (acc, value, reduceKey) => {
+    const newKey = `  ${reduceKey}`;
+    acc[newKey] = addIndent(value);
+    return acc;
+  }, {});
+};
+const getDiffThree = (file1, file2) => {
+  const three = {};
+  const keys = new Set([...Object.keys(file2), ...Object.keys(file1)].sort());
+  keys.forEach((key) => {
+    const answers = { file1: _.has(file1, key), file2: _.has(file2, key) };
+    if (answers.file1 === true && answers.file2 === true) {
+      if (file1[key] === file2[key]) {
+        three[`  ${key}`] = file1[key];
+      } else if (_.isObject(file1[key]) && _.isObject(file2[key])) {
+        three[`  ${key}`] = getDiffThree(file1[key], file2[key]);
+      } else {
+        three[`+ ${key}`] = addIndent(file2[key]);
+        three[`- ${key}`] = addIndent(file1[key]);
+      }
+    } else if (answers.file2 === true) {
+      three[`+ ${key}`] = addIndent(file2[key]);
     } else {
-      acc.push(`  + ${key}: ${after[key]}`);
-      acc.push(`  - ${key}: ${value}`);
+      three[`- ${key}`] = addIndent(file1[key]);
     }
-    return acc;
-  }, []);
-  return _.reduce(after, (acc, value, key) => {
-    if (!_.has(before, [key])) acc.push(`  + ${key}: ${value}`);
-    return acc;
-  }, difference);
+  });
+  return three;
+};
+const render = (obj, indent = 2) => {
+  const result = `${_.reduce(obj, (acc, value, key) => {
+    if (_.isObject(value)) {
+      return `${acc}\n${' '.repeat(indent)}${key}: ${render(value, indent + 4)}`;
+    }
+    return `${acc}\n${' '.repeat(indent)}${key}: ${value}`;
+  }, '{')}\n${' '.repeat(indent - 2)}}`;
+  return result;
 };
 const genDiff = (path1, path2) => {
   const dataBefore = parse(path1);
   const dataAfter = parse(path2);
-  const res = `{\n${getDifference(dataBefore, dataAfter).join('\n')}\n}`;
+  const diff = getDiffThree(dataBefore, dataAfter);
+  const res = render(diff);
   console.log(res);
   return res;
 };
@@ -42,5 +65,5 @@ const start = () => {
   program.action((firstPath, secondPath) => genDiff(firstPath, secondPath));
   program.parse(process.argv);
 };
-export { start, getFullPath, getDifference };
+export { start, getFullPath };
 export default genDiff;
