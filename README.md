@@ -23,3 +23,8 @@ $ make lint
 $ gendiff -h
 https://asciinema.org/a/Bq5Ck3YcdAd3kfFnFBUD5PZie
 ```
+## Usage option -f:
+```sh
+$ gendiff -f [plian]
+https://asciinema.org/a/53AZyfVwCp7BnodlYg4Dgjch5
+```
