@@ -1,11 +1,9 @@
 {
   "name": "lkf-frontend-project-lvl2",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "traning project 'Differences calculator'",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest",
-    "gendiff": "npx babel-node src/bin/gendiff.js",
     "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
     "prepublishOnly": "npm run build"
   },
@@ -29,10 +27,10 @@
   },
   "homepage": "https://github.com/loukianen/frontend-project-lvl2#readme",
   "devDependencies": {
-    "@babel/cli": "^7.7.0",
-    "@babel/core": "^7.7.2",
-    "@babel/node": "^7.7.0",
-    "@babel/preset-env": "^7.7.1",
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/node": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
     "eslint": "^6.6.0",

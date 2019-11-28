@@ -9,21 +9,16 @@ const fileIni1 = `${__dirname}/__fixtures__/before.ini`;
 const fileIni2 = `${__dirname}/__fixtures__/after.ini`;
 const etalon = `${__dirname}/__fixtures__/etalon`;
 const etalonPlain = `${__dirname}/__fixtures__/etalonPlain`;
+const etalonJson = `${__dirname}/__fixtures__/etalonJson`;
 const getConsts = (firstFile, secondFile, format = 'usual') => {
   const variants = {};
-  variants.usual = (fail1, fail2) => {
-    const expectResult = fs.readFileSync(etalon, 'utf8');
-    const result = genDiff(fail1, fail2);
-    const wrongResult = `${expectResult}}`;
-    return [expectResult, result, wrongResult];
-  };
-  variants.plain = (fail1, fail2) => {
-    const expectResult = fs.readFileSync(etalonPlain, 'utf8');
-    const result = genDiff(fail1, fail2, 'plain');
-    const wrongResult = `${expectResult}}`;
-    return [expectResult, result, wrongResult];
-  };
-  return variants[format](firstFile, secondFile, format)
+  variants.usual = etalon;
+  variants.plain = etalonPlain;
+  variants.json = etalonJson;
+  const expectResult = fs.readFileSync(variants[format], 'utf8');
+  const result = genDiff(firstFile, secondFile, format);
+  const wrongResult = `${expectResult}}`;
+  return [expectResult, result, wrongResult];
 };
 test.each([
   getConsts(fileJson1, fileJson2),
@@ -34,16 +29,19 @@ test.each([
   expect(res).not.toBe(wrong);
 }, 10);
 test.each([
-  getConsts(fileJson1, fileJson2, 'plain'),
-  getConsts(fileYml1, fileYml2, 'plain'),
+  // getConsts(fileJson1, fileJson2, 'plain'),
+  // getConsts(fileYml1, fileYml2, 'plain'),
   getConsts(fileIni1, fileIni2, 'plain'),
-])('getDiffUsual%# json, yml, ini', (expRes, res, wrong) => {
+])('getDiffPlain%# json, yml, ini', (expRes, res, wrong) => {
   expect(res).toBe(expRes);
   expect(res).not.toBe(wrong);
 }, 10);
-/*])('getDiff%# json, yml, ini', (expRes, res, wroRes) => {
-  expect(res).toEqual(expect.arrayContaining(expRes));
-  expect(expRes).toEqual(expect.arrayContaining(res));
-  expect(wroRes).not.toEqual(expect.arrayContaining(expRes));
-});*/
+test.each([
+  // getConsts(fileJson1, fileJson2, 'json'),
+  getConsts(fileYml1, fileYml2, 'json'),
+  // getConsts(fileIni1, fileIni2, 'json'),
+])('getDiffJson%# json, yml, ini', (expRes, res, wrong) => {
+  expect(res).toBe(expRes);
+  expect(res).not.toBe(wrong);
+}, 10);
 // that cod id from code-climat 8952ce102d144a6c27b94c0ce7d2a4696597733df4542e17c624b126c83bc3a1

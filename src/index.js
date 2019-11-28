@@ -3,44 +3,11 @@ import program from 'commander';
 import _ from 'lodash';
 import pkg from '../package.json';
 import parse from './parser';
-// import getUsualFofmat from '../formatters/usualFormatter';
-// import getPlainFofmat from '../formatters/plainFormatter';
+import getUsualFofmat from './formatters/usualFormatter';
+import getPlainFofmat from './formatters/plainFormatter';
+import getJsonFormat from './formatters/jsonFormatter';
 
-const render1 = (obj, indent = 2) => {
-  const result = `${_.reduce(obj, (acc, value) => {
-    if (value.children) {
-      return `${acc}\n${' '.repeat(indent)}${value.option} ${value.name}: ${render1(value.children, indent + 4)}`;
-    }
-    return `${acc}\n${' '.repeat(indent)}${value.option} ${value.name}: ${value.value}`;
-  }, '{')}\n${' '.repeat(indent - 2)}}`;
-  return result;
-};
-const render2 = (data) => {
-  const iter = (obj, prefix = '') => {
-    const result = _.reduce(obj, (acc, value, key) => {
-      if (value.option === '+') {
-        const valuePlus = !value.children ? value.value : '[complex value]';
-        if (obj[key + 1] && obj[key + 1].name === value.name) {
-          const valueMinus = obj[key + 1].value ? obj[key + 1].value : '[complex value]';
-          return `${acc}Property '${prefix}${value.name}' was updated. From '${valueMinus}' to '${valuePlus}'\n`;
-        }
-        return `${acc}Property '${prefix}${value.name}' was added with value: ${valuePlus}\n`;
-      }
-      if (value.option === '-') {
-        return (obj[key - 1] && obj[key - 1].name === value.name)
-          ? acc
-          : `${acc}Property '${prefix}${value.name}' was removed\n`;
-      }
-      if (value.children) {
-        return `${acc}${iter(value.children, `${prefix}${value.name}.`)}`;
-      }
-      return acc;
-    }, '');
-    return result;
-  };
-  return iter(data).split('\n').filter((el) => el.length > 0).join('\n');
-};
-const render = { usual: render1, plain: render2 };
+const render = { usual: getUsualFofmat, plain: getPlainFofmat, json: getJsonFormat };
 const getFullPath = (value) => {
   const valueParts = value.split('/');
   const fileName = valueParts.pop();
@@ -131,6 +98,5 @@ const start = () => {
   });
   program.parse(process.argv);
 };
-const lodashReduce = _.reduce;
-export { start, getFullPath, lodashReduce };
+export { start, getFullPath };
 export default genDiff;
