@@ -5,10 +5,10 @@ import fs from 'fs';
 
 export default (filePath) => {
   const parsers = {
-    json: (file) => JSON.parse(fs.readFileSync(file, 'utf8')),
-    yml: (file) => yaml.safeLoad(fs.readFileSync(file, 'utf8')),
-    ini: (file) => ini.parse(fs.readFileSync(file, 'utf-8')),
+    json: (fullFilePath) => JSON.parse(fs.readFileSync(fullFilePath, 'utf8')),
+    yml: (fullFilePath) => yaml.safeLoad(fs.readFileSync(fullFilePath, 'utf8')),
+    ini: (fullFilePath) => ini.parse(fs.readFileSync(fullFilePath, 'utf-8')),
   };
-  const type = path.extname(filePath).slice(1);
-  return parsers[type](filePath);
+  const fileType = path.extname(filePath).slice(1);
+  return parsers[fileType](filePath);
 };

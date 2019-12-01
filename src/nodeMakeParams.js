@@ -1,0 +1,66 @@
+const nodeMakeParams = {
+  addedWithChildren: {
+    file1HasKey: false,
+    file2HasKey: true,
+    value1IsObject: false,
+    value2IsObject: true,
+    valuesEqual: false,
+  },
+  addedWithoutChildren: {
+    file1HasKey: false,
+    file2HasKey: true,
+    value1IsObject: false,
+    value2IsObject: false,
+    valuesEqual: false,
+  },
+  deletedWithChildren: {
+    file1HasKey: true,
+    file2HasKey: false,
+    value1IsObject: true,
+    value2IsObject: false,
+    valuesEqual: false,
+  },
+  deletedWithoutChildren: {
+    file1HasKey: true,
+    file2HasKey: false,
+    value1IsObject: false,
+    value2IsObject: false,
+    valuesEqual: false,
+  },
+  valueToChildren: {
+    file1HasKey: true,
+    file2HasKey: true,
+    value1IsObject: false,
+    value2IsObject: true,
+    valuesEqual: false,
+  },
+  childrenToValue: {
+    file1HasKey: true,
+    file2HasKey: true,
+    value1IsObject: true,
+    value2IsObject: false,
+    valuesEqual: false,
+  },
+  constant: {
+    file1HasKey: true,
+    file2HasKey: true,
+    value1IsObject: false,
+    value2IsObject: false,
+    valuesEqual: true,
+  },
+  valueChanged: {
+    file1HasKey: true,
+    file2HasKey: true,
+    value1IsObject: false,
+    value2IsObject: false,
+    valuesEqual: false,
+  },
+  childrenChanged: {
+    file1HasKey: true,
+    file2HasKey: true,
+    value1IsObject: true,
+    value2IsObject: true,
+    valuesEqual: false,
+  },
+};
+export default nodeMakeParams;

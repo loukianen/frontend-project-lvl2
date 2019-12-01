@@ -3,88 +3,54 @@ import program from 'commander';
 import _ from 'lodash';
 import pkg from '../package.json';
 import parse from './parser';
+import nodeMakers from './nodeMakers';
+import nodeMakeParams from './nodeMakeParams';
 import getUsualFofmat from './formatters/usualFormatter';
 import getPlainFofmat from './formatters/plainFormatter';
 import getJsonFormat from './formatters/jsonFormatter';
 
-const render = { usual: getUsualFofmat, plain: getPlainFofmat, json: getJsonFormat };
-const getFullPath = (value) => {
-  const valueParts = value.split('/');
-  const fileName = valueParts.pop();
-  const catalog = valueParts.join('/');
-  return path.resolve(catalog, fileName);
+const renders = { usual: getUsualFofmat, plain: getPlainFofmat, json: getJsonFormat };
+const getFullFilePath = (filePath) => {
+  const pathParts = filePath.split('/');
+  const fileName = pathParts[pathParts.length - 1];
+  const fileCatalog = pathParts.slice(0, -1).join('/');
+  return path.resolve(fileCatalog, fileName);
 };
-const addStructure = (obj) => {
-  if (!_.isObject(obj)) return obj;
-  return _.reduce(obj, (acc, value, reduceKey) => {
-    const newNode = {};
-    newNode.name = reduceKey;
-    newNode.option = ' ';
-    if (_.isObject(value)) {
-      newNode.children = addStructure(value);
-    } else {
-      newNode.value = value;
-    }
-    return { newNode, ...acc };
-  }, {});
+const makeNode = (nodeName, valueBefore, valueAfter, type) => {
+  const node = nodeMakers[type]([valueBefore, valueAfter]);
+  node.name = nodeName;
+  return node;
 };
+const addStructure = (nodeChildren) => _.reduce(nodeChildren, (acc, value, key) => {
+  const nodeType = _.isObject(value) ? 'childrenChanged' : 'constant';
+  const newNode = makeNode(key, value, value, nodeType);
+  const res = { newNode, ...acc };
+  return res;
+}, {});
 const getDiffThree = (file1, file2) => {
-  const keys = Array.from(new Set([...Object.keys(file2), ...Object.keys(file1)])).sort();
-  return keys.reduce((three, key) => {
-    const answers = { file1: _.has(file1, key), file2: _.has(file2, key) };
-    const threeNode = {};
-    const threeNodeMinus = {};
-    if (answers.file1 === true && answers.file2 === true) {
-      if (file1[key] === file2[key]) {
-        threeNode.name = key;
-        threeNode.value = file1[key];
-        threeNode.option = ' ';
-      } else if (_.isObject(file1[key]) && _.isObject(file2[key])) {
-        threeNode.name = key;
-        threeNode.option = ' ';
-        threeNode.children = getDiffThree(file1[key], file2[key]);
-      } else {
-        threeNode.name = key;
-        threeNode.option = '+';
-        if (_.isObject(file2[key])) {
-          threeNode.children = addStructure(file2[key]);
-        } else {
-          threeNode.value = file2[key];
-        }
-        threeNodeMinus.name = key;
-        threeNodeMinus.option = '-';
-        if (_.isObject(file1[key])) {
-          threeNodeMinus.children = addStructure(file1[key]);
-        } else {
-          threeNodeMinus.value = file1[key];
-        }
-      }
-    } else if (answers.file2 === true) {
-      threeNode.name = key;
-      threeNode.option = '+';
-      if (_.isObject(file2[key])) {
-        threeNode.children = addStructure(file2[key]);
-      } else {
-        threeNode.value = file2[key];
-      }
-    } else {
-      threeNodeMinus.name = key;
-      threeNodeMinus.option = '-';
-      if (_.isObject(file1[key])) {
-        threeNodeMinus.children = addStructure(file1[key]);
-      } else {
-        threeNodeMinus.value = file1[key];
-      }
-    }
-    return [...three, threeNode, threeNodeMinus].filter((el) => Object.keys(el).length > 0);
+  const keys = _.union(Object.keys(file2), Object.keys(file1)).sort();
+  const res = keys.reduce((three, key) => {
+    const value1 = file1[key];
+    const value2 = file2[key];
+    const currentParams = {
+      file1HasKey: _.has(file1, key),
+      file2HasKey: _.has(file2, key),
+      value1IsObject: _.isObject(value1),
+      value2IsObject: _.isObject(value2),
+      valuesEqual: value1 === value2,
+    };
+    const nodeType = _.findKey(nodeMakeParams, (params) => _.isEqual(params, currentParams));
+    return [makeNode(key, value1, value2, nodeType), ...three];
   }, []);
+  // console.log(res);
+  return res;
 };
 const genDiff = (path1, path2, format = 'usual') => {
-  const dataBefore = parse(getFullPath(path1));
-  const dataAfter = parse(getFullPath(path2));
+  const dataBefore = parse(getFullFilePath(path1));
+  const dataAfter = parse(getFullFilePath(path2));
   const diff = getDiffThree(dataBefore, dataAfter);
-  const res = render[format](diff);
-  console.log(res);
+  const res = renders[format](diff);
+  // console.log(res);
   return res;
 };
 const start = () => {
@@ -98,5 +64,7 @@ const start = () => {
   });
   program.parse(process.argv);
 };
-export { start, getFullPath };
+export {
+  start, getDiffThree, makeNode, addStructure,
+};
 export default genDiff;
