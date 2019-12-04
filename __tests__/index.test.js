@@ -29,17 +29,13 @@ test.each([
   expect(res).not.toBe(wrong);
 }, 10);
 test.each([
-  // getConsts(fileJson1, fileJson2, 'plain'),
-  // getConsts(fileYml1, fileYml2, 'plain'),
   getConsts(fileIni1, fileIni2, 'plain'),
 ])('getDiffPlain%# json, yml, ini', (expRes, res, wrong) => {
   expect(res).toBe(expRes);
   expect(res).not.toBe(wrong);
 }, 10);
 test.each([
-  // getConsts(fileJson1, fileJson2, 'json'),
   getConsts(fileYml1, fileYml2, 'json'),
-  // getConsts(fileIni1, fileIni2, 'json'),
 ])('getDiffJson%# json, yml, ini', (expRes, res, wrong) => {
   expect(res).toBe(expRes);
   expect(res).not.toBe(wrong);
