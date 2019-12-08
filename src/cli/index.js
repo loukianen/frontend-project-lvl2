@@ -1,5 +1,5 @@
 import program from 'commander';
-import genDiff from '../';
+import genDiff from '..';
 import pkg from '../../package.json';
 
 export default () => {

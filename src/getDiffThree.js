@@ -8,7 +8,7 @@ const normaliseData = ([dataIn1, dataIn2]) => {
     ? [dataIn1, dataIn2] : normalisedData;
   return dataOut;
 };
-const normaliseValue = (val) => /^\d*\.?\d+?$|^\d*,?\d+?$/.test(val) ? Number(val) : val;
+const normaliseValue = (val) => (/^\d*\.?\d+?$|^\d*,?\d+?$/.test(val) ? Number(val) : val);
 const getDiffThree = (data) => {
   const [list1, list2] = normaliseData(data);
   const keys = _.union(Object.keys(list2), Object.keys(list1)).sort();
