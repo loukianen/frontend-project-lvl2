@@ -3,6 +3,7 @@
 plugins:
 # https://github.com/babel/eslint-plugin-babel
   - babel
+  - eslint-plugin-jest
 
 # https://eslint.org/docs/user-guide/configuring#specifying-environments
 env:
@@ -13,6 +14,7 @@ parser: babel-eslint
 
 extends:
   - 'airbnb-base'
+  - 'plugin:jest/recommended'
 
 rules:
   no-console: 0

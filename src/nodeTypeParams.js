@@ -1,4 +1,4 @@
-const nodeMakeParams = {
+const nodeTypeParams = {
   addedWithChildren: {
     list1HasKey: false,
     list2HasKey: true,
@@ -63,4 +63,4 @@ const nodeMakeParams = {
     valuesEqual: false,
   },
 };
-export default nodeMakeParams;
+export default nodeTypeParams;

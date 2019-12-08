@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import nodeMakeParams from './nodeMakeParams';
+import nodeTypeParams from './nodeTypeParams';
 
 export default (data) => {
   const [list1, list2, key] = data;
@@ -10,6 +10,6 @@ export default (data) => {
     value2IsObject: _.isObject(list2[key]),
     valuesEqual: list1[key] === list2[key],
   };
-  const res = _.findKey(nodeMakeParams, (nodeParams) => _.isEqual(nodeParams, currentParams));
+  const res = _.findKey(nodeTypeParams, (nodeParams) => _.isEqual(nodeParams, currentParams));
   return res;
 };

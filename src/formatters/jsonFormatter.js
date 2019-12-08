@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 const getFormattedAst = (nodesThree) => {
-  const getFormattedValueToJson = (val) => (typeof val === 'string' ? `"${val}"` : val);
+  const getFormattedValueToJson = (val) => (typeof (val) === 'string' ? `"${val}"` : val);
   const outputVariants = {
     addedWithChildren: (node) => `{"children":${getFormattedAst(node.children)},"name":"${node.name}","type":"${node.type}"},`,
     addedWithoutChildren: (node) => `{"name":"${node.name}","newValue":${getFormattedValueToJson(node.newValue)},"type":"${node.type}"},`,
