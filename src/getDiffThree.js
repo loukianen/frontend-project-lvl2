@@ -2,15 +2,15 @@ import _ from 'lodash';
 import nodeMakerData from './nodeMakerData';
 import getNodeType from './getNodeType';
 
-const normaliseData = ([dataIn1, dataIn2]) => {
+const normaliseData = (dataIn1, dataIn2) => {
   const normalisedData = _.isObject(dataIn1) ? [dataIn1, dataIn1] : [dataIn2, dataIn2];
   const dataOut = _.isObject(dataIn1) && _.isObject(dataIn2)
     ? [dataIn1, dataIn2] : normalisedData;
   return dataOut;
 };
 const normaliseValue = (val) => (/^\d*\.?\d+?$|^\d*,?\d+?$/.test(val) ? Number(val) : val);
-const getDiffThree = (data) => {
-  const [list1, list2] = normaliseData(data);
+const getDiffThree = (data1, data2) => {
+  const [list1, list2] = normaliseData(data1, data2);
   const keys = _.union(Object.keys(list2), Object.keys(list1)).sort();
   const res = keys.reduce((three, key) => {
     const value1 = normaliseValue(list1[key]);
@@ -25,7 +25,7 @@ const getDiffThree = (data) => {
         children: getDiffThree,
       };
       acc[property] = typeof instructions[property] === 'function'
-        ? instructions[property]([value1, value2])
+        ? instructions[property](value1, value2)
         : instructions[property];
       return acc;
     }, {});
