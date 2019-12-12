@@ -6,17 +6,18 @@ const normaliseValue = (val) => (/^\d*\.?\d+?$|^\d*,?\d+?$/.test(val) ? Number(v
 const addChildrenNodes = (data1, data2) => {
   const data = _.isObject(data1) ? data1 : data2;
   const childrenNodes = _.reduce(data, (acc, value, name) => {
-    const nodeType = _.isObject(value) ? 'childrenChanged' : 'constant';
+    if (_.isObject(value)) {
+      const nodeWithChildren = { name, type: 'childrenChanged', children: addChildrenNodes(value) };
+      return [...acc, nodeWithChildren];
+    }
     const curValue = normaliseValue(value);
-    const newNode = nodeType === 'constant'
-      ? {
-        name,
-        type: nodeType,
-        oldValue: curValue,
-        newValue: curValue,
-      }
-      : { name, type: nodeType, children: addChildrenNodes(value) };
-    return [...acc, newNode];
+    const nodeWithoutCildren = {
+      name,
+      type: 'constant',
+      oldValue: curValue,
+      newValue: curValue,
+    };
+    return [...acc, nodeWithoutCildren];
   }, []);
   return childrenNodes;
 };
@@ -27,8 +28,8 @@ const getDiffTree = (list1, list2) => {
     const value2 = list2[key];
     const nodeType = getNodeType([list1, list2, key]);
     const newNodePropertys = getNewNodePropertys(nodeType);
+    const childrenFunc = nodeType === 'childrenChanged' ? getDiffTree : addChildrenNodes;
     const newNode = newNodePropertys.reduce((acc, property) => {
-      const childrenFunc = nodeType === 'childrenChanged' ? getDiffTree : addChildrenNodes;
       const nodeGauge = {
         name: key,
         type: nodeType,
