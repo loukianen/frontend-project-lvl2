@@ -9,4 +9,4 @@ const nodeMakerData = {
   valueChanged: ['name', 'type', 'oldValue', 'newValue'],
   childrenChanged: ['name', 'type', 'children'],
 };
-export default nodeMakerData;
+export default (nodeName) => nodeMakerData[nodeName];
