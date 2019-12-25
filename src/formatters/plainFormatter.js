@@ -3,12 +3,9 @@ import _ from 'lodash';
 const addQuotesToStringValue = (data) => (typeof data === 'string' ? `'${data}'` : data);
 const getFormattedAst = (nodesThree, prefix = '') => {
   const outputVariants = {
-    added: (node, prefixInside) => {
-      const output = _.isObject(node.value)
-        ? `Property '${prefixInside}${node.name}' was added with value: [complex value]\n`
-        : `Property '${prefixInside}${node.name}' was added with value: ${addQuotesToStringValue(node.value)}\n`;
-      return output;
-    },
+    added: (node, prefixInside) => (_.isObject(node.value)
+      ? `Property '${prefixInside}${node.name}' was added with value: [complex value]\n`
+      : `Property '${prefixInside}${node.name}' was added with value: ${addQuotesToStringValue(node.value)}\n`),
     deleted: (node, prefixInside) => `Property '${prefixInside}${node.name}' was removed\n`,
     unchanged: () => '',
     changed: (node, prefixInside) => {
@@ -25,12 +22,10 @@ const getFormattedAst = (nodesThree, prefix = '') => {
     bothValuesAreObjects: (node, prefixInside) => `${getFormattedAst(node.children, `${prefixInside}${node.name}.`)}`,
   };
   const sortedThree = _.sortBy(nodesThree, (node) => node.name);
-  const result = `${_.reduce(sortedThree, (acc, node) => {
+  return `${_.reduce(sortedThree, (acc, node) => {
     const nodeType = node.type;
     return `${acc}${outputVariants[nodeType](node, prefix)}\n`;
   }, '')}`.split('\n').filter((el) => el.length > 0).join('\n');
-  return result;
 };
-
 
 export default getFormattedAst;
