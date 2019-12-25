@@ -14,7 +14,7 @@ const genDiff = (path1, path2, format = 'usual') => {
   const data2 = getData(content2, contentType2);
   const diff = getDiffTree(data1, data2);
   const res = getFormattedDiff(diff, format);
-  console.log(res);
+  // console.log(res);
   return res;
 };
 

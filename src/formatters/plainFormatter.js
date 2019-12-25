@@ -1,19 +1,28 @@
 import _ from 'lodash';
 
+const addQuotesToStringValue = (data) => (typeof data === 'string' ? `'${data}'` : data);
 const getFormattedAst = (nodesThree, prefix = '') => {
   const outputVariants = {
-    addedWithChildren: (node, prefixInside) => `Property '${prefixInside}${node.name}' was added with value: [complex value]\n`,
-    addedWithoutChildren: (node, prefixInside) => {
-      const value = typeof node.newValue === 'string' ? `'${node.newValue}'` : node.newValue;
-      return `Property '${prefixInside}${node.name}' was added with value: ${value}\n`;
+    added: (node, prefixInside) => {
+      const output = _.isObject(node.value)
+        ? `Property '${prefixInside}${node.name}' was added with value: [complex value]\n`
+        : `Property '${prefixInside}${node.name}' was added with value: ${addQuotesToStringValue(node.value)}\n`;
+      return output;
     },
-    deletedWithChildren: (node, prefixInside) => `Property '${prefixInside}${node.name}' was removed\n`,
-    deletedWithoutChildren: (node, prefixInside) => `Property '${prefixInside}${node.name}' was removed\n`,
-    valueToChildren: (node, prefixInside) => `Property '${prefixInside}${node.name}' was updated. From '${node.oldValue}' to '[complex value]'\n`,
-    childrenToValue: (node, prefixInside) => `Property '${prefixInside}${node.name}' was updated. From '[complex value]' to '${node.newValue}'\n`,
-    constant: () => '',
-    valueChanged: (node, prefixInside) => `Property '${prefixInside}${node.name}' was updated. From '${node.oldValue}' to '${node.newValue}'\n`,
-    childrenChanged: (node, prefixInside) => `${getFormattedAst(node.children, `${prefixInside}${node.name}.`)}`,
+    deleted: (node, prefixInside) => `Property '${prefixInside}${node.name}' was removed\n`,
+    unchanged: () => '',
+    changed: (node, prefixInside) => {
+      const oldValue = node.value.old;
+      const newValue = node.value.new;
+      const dataType = `${_.isObject(oldValue)}${_.isObject(newValue)}`;
+      const outputs = {
+        truefalse: `Property '${prefixInside}${node.name}' was updated. From '[complex value]' to ${addQuotesToStringValue(newValue)}\n`,
+        falsetrue: `Property '${prefixInside}${node.name}' was updated. From ${addQuotesToStringValue(oldValue)} to '[complex value]'\n`,
+        falsefalse: `Property '${prefixInside}${node.name}' was updated. From ${addQuotesToStringValue(oldValue)} to ${addQuotesToStringValue(newValue)}\n`,
+      };
+      return outputs[dataType];
+    },
+    bothValuesAreObjects: (node, prefixInside) => `${getFormattedAst(node.children, `${prefixInside}${node.name}.`)}`,
   };
   const sortedThree = _.sortBy(nodesThree, (node) => node.name);
   const result = `${_.reduce(sortedThree, (acc, node) => {

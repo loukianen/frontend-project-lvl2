@@ -1,16 +1,18 @@
 import _ from 'lodash';
 
+const getRenderedValue = (data, indentInside) => {
+  const renderedValue = _.isObject(data)
+    ? `${_.reduce(data, (acc, value, key) => `${acc}${' '.repeat(indentInside + 6)}${key}: ${getRenderedValue(value, indentInside + 4)}\n`, '{\n')}${' '.repeat(indentInside + 2)}}`
+    : data;
+  return renderedValue;
+};
 const getFormattedAst = (nodesThree, indent = 2) => {
   const outputVariants = {
-    addedWithChildren: (node, indentInside) => `+ ${node.name}: ${getFormattedAst(node.children, indentInside + 4)}`,
-    addedWithoutChildren: (node) => `+ ${node.name}: ${node.newValue}`,
-    deletedWithChildren: (node, indentInside) => `- ${node.name}: ${getFormattedAst(node.children, indentInside + 4)}`,
-    deletedWithoutChildren: (node) => `- ${node.name}: ${node.oldValue}`,
-    valueToChildren: (node, indentInside) => `+ ${node.name}: ${getFormattedAst(node.children, indentInside + 4)}\n${' '.repeat(indentInside)}- ${node.name}: ${node.oldValue}`,
-    childrenToValue: (node, indentInside) => `+ ${node.name}: ${node.newValue}\n${' '.repeat(indentInside)}- ${node.name}: ${getFormattedAst(node.children, indentInside + 4)}`,
-    constant: (node) => `  ${node.name}: ${node.newValue}`,
-    valueChanged: (node, indentInside) => `+ ${node.name}: ${node.newValue}\n${' '.repeat(indentInside)}- ${node.name}: ${node.oldValue}`,
-    childrenChanged: (node, indentInside) => `  ${node.name}: ${getFormattedAst(node.children, indentInside + 4)}`,
+    added: (node, indentInside) => `+ ${node.name}: ${getRenderedValue(node.value, indentInside)}`,
+    deleted: (node, indentInside) => `- ${node.name}: ${getRenderedValue(node.value, indentInside)}`,
+    unchanged: (node) => `  ${node.name}: ${node.value}`,
+    changed: (node, indentInside) => `+ ${node.name}: ${getRenderedValue(node.value.new, indentInside)}\n${' '.repeat(indentInside)}- ${node.name}: ${getRenderedValue(node.value.old, indentInside)}`,
+    bothValuesAreObjects: (node, indentInside) => `  ${node.name}: ${getFormattedAst(node.children, indentInside + 4)}`,
   };
   const sortedThree = _.sortBy(nodesThree, (node) => node.name);
   const result = `${_.reduce(sortedThree, (acc, node) => {
