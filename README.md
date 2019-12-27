@@ -1,7 +1,7 @@
 ##
 This repository is created and maintained by Konstantin Lukyanenok as an educational project of Hexlet.
 This CLI calculates the differences between file formats: json, ini, yml.
-Utility can also be imported as function // function(file1, file2)
+Utility can also be imported as function // function(file1, file2, [output format])
 
 ##
 

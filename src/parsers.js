@@ -2,7 +2,9 @@ import yaml from 'js-yaml';
 import ini from 'ini';
 import _ from 'lodash';
 
-const normaliseValue = (value) => (/^\d*\.?\d+?$|^\d*,?\d+?$/.test(value) ? Number(value) : value);
+// const normaliseValue = (value) => (/^\d*\.?\d+?$|^\d*,?\d+?$/.test(value) ? Number(value) : value);
+const normaliseValue = (value) => isNaN(value) || typeof value === 'boolean' ? value : Number(value);
+// const normaliseValue = (value) => !_.isNaN(value) ? Number(value) : value;
 const parsers = {
   json: JSON.parse,
   yml: yaml.safeLoad,
@@ -18,7 +20,7 @@ const parsers = {
 };
 const getParser = (dataType) => parsers[dataType];
 export default (content, contentType) => {
-  const toParse = getParser(contentType);
-  const result = toParse(content);
+  const parse = getParser(contentType);
+  const result = parse(content);
   return result;
 };
