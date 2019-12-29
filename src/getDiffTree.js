@@ -15,7 +15,12 @@ const getDiffTree = (list1, list2) => {
     if (list1[key] === list2[key]) {
       return { name: key, type: 'unchanged', value: list1[key] };
     }
-    return { name: key, type: 'changed', oldValue: list1[key], newValue: list2[key] };
+    return {
+      name: key,
+      type: 'changed',
+      oldValue: list1[key],
+      newValue: list2[key],
+    };
   });
   // console.log(diffTree);
   return diffTree;

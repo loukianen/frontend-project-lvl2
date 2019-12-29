@@ -2,9 +2,13 @@ import yaml from 'js-yaml';
 import ini from 'ini';
 import _ from 'lodash';
 
-// const normaliseValue = (value) => (/^\d*\.?\d+?$|^\d*,?\d+?$/.test(value) ? Number(value) : value);
-const normaliseValue = (value) => isNaN(value) || typeof value === 'boolean' ? value : Number(value);
-// const normaliseValue = (value) => !_.isNaN(value) ? Number(value) : value;
+// const normaliseValue=(value) => (/^\d*\.?\d+?$|^\d*,?\d+?$/.test(value) ? Number(value) : value);
+const normaliseValue = (value) => {
+  if (_.isString(value)) {
+    return _.isNaN(Number(value)) ? value : Number(value);
+  }
+  return (value);
+};
 const parsers = {
   json: JSON.parse,
   yml: yaml.safeLoad,
