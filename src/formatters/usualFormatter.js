@@ -11,8 +11,8 @@ const getFormattedAst = (nodesThree, indent = 2) => {
     added: (node, indentInside) => `+ ${node.name}: ${getRenderedValue(node.value, indentInside)}`,
     deleted: (node, indentInside) => `- ${node.name}: ${getRenderedValue(node.value, indentInside)}`,
     unchanged: (node) => `  ${node.name}: ${node.value}`,
-    changed: (node, indentInside) => `+ ${node.name}: ${getRenderedValue(node.value.new, indentInside)}\n${' '.repeat(indentInside)}- ${node.name}: ${getRenderedValue(node.value.old, indentInside)}`,
-    bothValuesAreObjects: (node, indentInside) => `  ${node.name}: ${getFormattedAst(node.children, indentInside + 4)}`,
+    changed: (node, indentInside) => `+ ${node.name}: ${getRenderedValue(node.newValue, indentInside)}\n${' '.repeat(indentInside)}- ${node.name}: ${getRenderedValue(node.oldValue, indentInside)}`,
+    nested: (node, indentInside) => `  ${node.name}: ${getFormattedAst(node.children, indentInside + 4)}`,
   };
   const sortedThree = _.sortBy(nodesThree, (node) => node.name);
   const result = `${_.reduce(sortedThree, (acc, node) => {
