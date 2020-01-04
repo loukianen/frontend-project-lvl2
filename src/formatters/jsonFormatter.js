@@ -1,1 +1,1 @@
-export default (nodesThree) => JSON.stringify(nodesThree);
+export default JSON.stringify;
