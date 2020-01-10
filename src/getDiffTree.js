@@ -22,7 +22,8 @@ const getDiffTree = (list1, list2) => {
       newValue: list2[key],
     };
   });
-  // console.log(diffTree);
-  return diffTree;
+  const sortedDiffTree = _.sortBy(diffTree, (node) => node.name);
+  // console.log(sortedDiffTree);
+  return sortedDiffTree;
 };
 export default getDiffTree;
