@@ -11,12 +11,12 @@ const getRenderedValue = (data, level) => {
     return data;
   }
   const indent = getIndent(level);
-  const basicPartRenderedValue = _.reduce(data, (acc, value, key) => {
-    const renderedNode = `${acc}${' '.repeat(indent + 6)}${key}: ${getRenderedValue(value, level + 1)}\n`;
-    return renderedNode;
-  }, '{\n');
+  const basicPartsRenderedValue = _.reduce(data, (acc, value, key) => {
+    const renderedNode = `${' '.repeat(indent + 6)}${key}: ${getRenderedValue(value, level + 1)}`;
+    return [...acc, renderedNode];
+  }, ['{']);
   const lastPartRenderedValue = `${' '.repeat(indent + 2)}}`;
-  const renderedValue = `${basicPartRenderedValue}${lastPartRenderedValue}`;
+  const renderedValue = [...basicPartsRenderedValue, lastPartRenderedValue].join('\n');
   return renderedValue;
 };
 const getFormattedAst = (nodesThree) => {
@@ -34,12 +34,12 @@ const getFormattedAst = (nodesThree) => {
       },
       nested: (node, levelInside) => `  ${node.name}: ${iter(node.children, levelInside + 1)}`,
     };
-    const basicPartFormattedAst = data.reduce((acc, node) => {
+    const basicPartsFormattedAst = data.map((node) => {
       const nodeType = node.type;
-      return `${acc}${' '.repeat(indent)}${outputVariants[nodeType](node, level)}\n`;
-    }, '{\n');
+      return `${' '.repeat(indent)}${outputVariants[nodeType](node, level)}`;
+    });
     const lastPartFormattedAst = `${' '.repeat(indent - 2)}}`;
-    const formattedAst = `${basicPartFormattedAst}${lastPartFormattedAst}`;
+    const formattedAst = ['{', ...basicPartsFormattedAst, lastPartFormattedAst].join('\n');
     return formattedAst;
   };
   return iter(nodesThree);

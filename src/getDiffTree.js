@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 const getDiffTree = (list1, list2) => {
-  const keys = _.union(Object.keys(list2), Object.keys(list1));
+  const keys = _.union(Object.keys(list2), Object.keys(list1)).sort();
   const diffTree = keys.map((key) => {
     if (_.has(list1, key) && !_.has(list2, key)) {
       return { name: key, type: 'deleted', value: list1[key] };
@@ -22,8 +22,7 @@ const getDiffTree = (list1, list2) => {
       newValue: list2[key],
     };
   });
-  const sortedDiffTree = _.sortBy(diffTree, (node) => node.name);
-  // console.log(sortedDiffTree);
-  return sortedDiffTree;
+  // console.log(diffTree);
+  return diffTree;
 };
 export default getDiffTree;

@@ -1,28 +1,17 @@
 import _ from 'lodash';
 
-const deleteEmptyString = (text) => text
-  .split('\n')
-  .filter((el) => el.length > 0)
-  .join('\n');
 const addQuotesToStringValue = (data) => (typeof data === 'string' ? `'${data}'` : data);
 const getChangedNodeText = (node, prefixInside) => {
+  const getValue = (value) => (_.isObject(value) ? "'[complex value]'" : `${addQuotesToStringValue(value)}`);
   const propertyName = `${prefixInside}${node.name}`;
-  const oldValue = `${addQuotesToStringValue(node.oldValue)}`;
-  const newValue = `${addQuotesToStringValue(node.newValue)}`;
-  const getText = (name, valueFrom, valueTo) => `Property '${name}' was updated. From ${valueFrom} to ${valueTo}`;
-  if (_.isObject(node.oldValue)) {
-    return getText(propertyName, "'[complex value]'", newValue);
-  }
-  if (_.isObject(node.newValue)) {
-    return getText(propertyName, oldValue, "'[complex value]'");
-  }
-  return getText(propertyName, oldValue, newValue);
+  const oldValue = getValue(node.oldValue);
+  const newValue = getValue(node.newValue);
+  return `Property '${propertyName}' was updated. From ${oldValue} to ${newValue}`;
 };
 const getAddedNodeText = (node, prefixInside) => {
   const propertyName = `${prefixInside}${node.name}`;
-  const value = `${addQuotesToStringValue(node.value)}`;
-  const getText = (name, text) => `Property '${name}' was added with value: ${text}`;
-  return _.isObject(node.value) ? getText(propertyName, '[complex value]') : getText(propertyName, value);
+  const value = _.isObject(node.value) ? '[complex value]' : `${addQuotesToStringValue(node.value)}`;
+  return `Property '${propertyName}' was added with value: ${value}`;
 };
 const getFormattedAst = (nodesThree) => {
   const iter = (data, prefix = '') => {
@@ -30,13 +19,17 @@ const getFormattedAst = (nodesThree) => {
       added: getAddedNodeText,
       deleted: (node, prefixInside) => `Property '${prefixInside}${node.name}' was removed`,
       changed: getChangedNodeText,
+      unchanged: () => null,
       nested: (node, prefixInside) => `${iter(node.children, `${prefixInside}${node.name}.`)}`,
     };
-    const formattedAst = data.reduce((acc, node) => {
+    const renderedNodes = data.map((node) => {
       const nodeType = node.type;
-      return nodeType === 'unchanged' ? acc : `${acc}${outputVariants[nodeType](node, prefix)}\n`;
-    }, '');
-    return deleteEmptyString(formattedAst);
+      return outputVariants[nodeType](node, prefix);
+    });
+    const formattedAst = renderedNodes
+      .filter((renderedNode) => !(_.isNull(renderedNode) || renderedNode.length === 0))
+      .join('\n');
+    return formattedAst;
   };
   return iter(nodesThree);
 };
