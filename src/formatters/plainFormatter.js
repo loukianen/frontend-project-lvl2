@@ -1,16 +1,16 @@
 import _ from 'lodash';
 
 const addQuotesToStringValue = (data) => (typeof data === 'string' ? `'${data}'` : data);
+const stringify = (value) => (_.isObject(value) ? '[complex value]' : `${addQuotesToStringValue(value)}`);
 const getChangedNodeText = (node, prefixInside) => {
-  const getValue = (value) => (_.isObject(value) ? "'[complex value]'" : `${addQuotesToStringValue(value)}`);
   const propertyName = `${prefixInside}${node.name}`;
-  const oldValue = getValue(node.oldValue);
-  const newValue = getValue(node.newValue);
+  const oldValue = stringify(node.oldValue);
+  const newValue = stringify(node.newValue);
   return `Property '${propertyName}' was updated. From ${oldValue} to ${newValue}`;
 };
 const getAddedNodeText = (node, prefixInside) => {
   const propertyName = `${prefixInside}${node.name}`;
-  const value = _.isObject(node.value) ? '[complex value]' : `${addQuotesToStringValue(node.value)}`;
+  const value = stringify(node.value);
   return `Property '${propertyName}' was added with value: ${value}`;
 };
 const getFormattedAst = (nodesThree) => {
@@ -26,9 +26,7 @@ const getFormattedAst = (nodesThree) => {
       const nodeType = node.type;
       return outputVariants[nodeType](node, prefix);
     });
-    const formattedAst = renderedNodes
-      .filter((renderedNode) => !(_.isNull(renderedNode) || renderedNode.length === 0))
-      .join('\n');
+    const formattedAst = _.compact(renderedNodes).join('\n');
     return formattedAst;
   };
   return iter(nodesThree);
