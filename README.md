@@ -23,5 +23,6 @@ $ make test
 ## Usage:
 ```sh
 $ gendiff -h
-https://asciinema.org/a/3LszbPtBZw7wNcGoToCSq7pl6
 ```
+https://asciinema.org/a/3LszbPtBZw7wNcGoToCSq7pl6
+
