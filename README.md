@@ -7,9 +7,9 @@ Utility can also be imported as function // function(file1, file2, [output forma
 
 # frontend-project-lvl2
 
+
 [![Maintainability](https://api.codeclimate.com/v1/badges/c32352d72d36e174a2e2/maintainability)](https://codeclimate.com/github/loukianen/frontend-project-lvl2/maintainability)
 [![Issue Count](https://codeclimate.com/github/loukianen/frontend-project-lvl2/badges/issue_count.svg)](https://codeclimate.com/github/loukianen/frontend-project-lvl2)
-[![Build Status](https://travis-ci.org/loukianen/frontend-project-lvl2.svg?branch=master)](https://travis-ci.org/loukianen/frontend-project-lvl2)
 [![Test coverage](https://api.codeclimate.com/v1/badges/c32352d72d36e174a2e2/test_coverage)](https://codeclimate.com/github/loukianen/frontend-project-lvl2/test_coverage)
 
 ## Setup
